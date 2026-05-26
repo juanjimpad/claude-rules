@@ -34,8 +34,9 @@ Contenido de la regla...
 **How to apply:** Cuándo y cómo aplicarla.
 ```
 
-2. Añade la entrada correspondiente en `rules/index.json`
-3. Abre una PR
+2. Abre una PR a `main`
+
+El `rules/index.json` se regenera automáticamente al mergear.
 
 ## Estructura
 
