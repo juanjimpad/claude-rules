@@ -1,0 +1,28 @@
+{
+  "name": "claude-rules",
+  "owner": {
+    "name": "juanjimpad",
+    "email": "juanjimpad@gmail.com"
+  },
+  "description": "Behavior rules for Claude Code. Browse and install rules directly from Claude Code.",
+  "version": "1.0.0",
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "claude-rules",
+      "source": "./plugins/claude-rules",
+      "displayName": "Claude Rules",
+      "description": "Adds the /install-rule command to browse and install behavior rules from the marketplace.",
+      "version": "1.0.0",
+      "author": {
+        "name": "juanjimpad"
+      },
+      "license": "MIT",
+      "keywords": ["rules", "memory", "workflow", "git", "behavior"],
+      "category": "productivity",
+      "tags": ["claude", "rules", "memory", "workflow"]
+    }
+  ]
+}
