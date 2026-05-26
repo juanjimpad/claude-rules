@@ -16,8 +16,14 @@
         <input type="text" id="search" class="search" placeholder="Buscar reglas...">
       </div>
       <div class="source-wrap">
-        <input type="text" id="source-input" class="source-input" placeholder="https://github.com/usuario/repo">
-        <button id="btn-add-source" class="btn-source">Añadir</button>
+        <button id="btn-open-popup" class="btn-source">+ Añadir repositorio</button>
+        <div class="source-popup hidden" id="source-popup">
+          <p class="popup-label">Pega la URL de un repositorio GitHub con <code>rules/index.json</code></p>
+          <div class="popup-row">
+            <input type="text" id="source-input" class="source-input" placeholder="https://github.com/usuario/repo">
+            <button id="btn-add-source" class="btn-add">Añadir</button>
+          </div>
+        </div>
       </div>
     </div>
   </header>

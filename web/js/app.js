@@ -164,15 +164,32 @@ document.getElementById("search").addEventListener("input", e => {
   renderGrid();
 });
 
+const popup = document.getElementById("source-popup");
+
+document.getElementById("btn-open-popup").addEventListener("click", e => {
+  e.stopPropagation();
+  popup.classList.toggle("hidden");
+  if (!popup.classList.contains("hidden")) {
+    document.getElementById("source-input").focus();
+  }
+});
+
 document.getElementById("btn-add-source").addEventListener("click", () => {
   const url = document.getElementById("source-input").value;
-  if (url.trim()) addSource(url.trim());
+  if (url.trim()) { popup.classList.add("hidden"); addSource(url.trim()); }
 });
 
 document.getElementById("source-input").addEventListener("keydown", e => {
   if (e.key === "Enter") {
     const url = e.target.value;
-    if (url.trim()) addSource(url.trim());
+    if (url.trim()) { popup.classList.add("hidden"); addSource(url.trim()); }
+  }
+  if (e.key === "Escape") popup.classList.add("hidden");
+});
+
+document.addEventListener("click", e => {
+  if (!popup.classList.contains("hidden") && !popup.closest(".source-wrap").contains(e.target)) {
+    popup.classList.add("hidden");
   }
 });
 
