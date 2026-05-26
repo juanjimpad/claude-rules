@@ -40,6 +40,7 @@ El `rules/index.json` se regenera automáticamente al mergear.
 
 ## Reglas disponibles
 
+<!-- rules-start -->
 ### `git/workflow-pr` — Git Workflow: PR para main
 
 Commits siempre a `dev`, PR para pasar a `main`, nunca push directo a `main`.
@@ -51,6 +52,7 @@ curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.
 Claude siempre trabajará en `dev` y creará un PR con `gh pr create --base main --head dev`. El merge lo hace el usuario desde GitHub, nunca Claude.
 
 ---
+<!-- rules-end -->
 
 ## Estructura
 
