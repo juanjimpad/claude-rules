@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\jajpa\\\\OneDrive\\\\Documentos\\\\Proyectos\\\\VSCode\\\\claude-rules\\\\skills\")",
+      "Bash(Out-Null)",
+      "Bash(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\jajpa\\\\OneDrive\\\\Documentos\\\\Proyectos\\\\VSCode\\\\claude-rules\\\\.claude\\\\commands\")",
+      "Bash(Write-Host \"Dirs OK\")",
+      "PowerShell(Copy-Item \"c:\\\\Users\\\\jajpa\\\\OneDrive\\\\Documentos\\\\Proyectos\\\\VSCode\\\\claude-rules\\\\skills\\\\install-rule.md\" \"c:\\\\Users\\\\jajpa\\\\OneDrive\\\\Documentos\\\\Proyectos\\\\VSCode\\\\claude-rules\\\\.claude\\\\commands\\\\install-rule.md\" -Force; New-Item -ItemType Directory -Force \"$env:USERPROFILE\\\\.claude\\\\commands\" | Out-Null; Copy-Item \"c:\\\\Users\\\\jajpa\\\\OneDrive\\\\Documentos\\\\Proyectos\\\\VSCode\\\\claude-rules\\\\skills\\\\install-rule.md\" \"$env:USERPROFILE\\\\.claude\\\\commands\\\\install-rule.md\" -Force; Write-Host \"Installed to project .claude/commands/ and $env:USERPROFILE\\\\.claude\\\\commands\\\\\")"
+    ]
+  }
+}

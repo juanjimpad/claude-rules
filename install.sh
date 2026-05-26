@@ -3,12 +3,23 @@ set -e
 
 RULE_ID="$1"
 BASE_URL="https://raw.githubusercontent.com/juanjimpad/claude-rules/main/rules"
+SKILLS_URL="https://raw.githubusercontent.com/juanjimpad/claude-rules/main/skills"
 MEMORY_DIR="${HOME}/.claude/memory"
 MEMORY_INDEX="${HOME}/.claude/MEMORY.md"
+COMMANDS_DIR="${HOME}/.claude/commands"
+
+# Install /install-rule skill if not already present
+if [ ! -f "${COMMANDS_DIR}/install-rule.md" ]; then
+  mkdir -p "$COMMANDS_DIR"
+  curl -sL "${SKILLS_URL}/install-rule.md" -o "${COMMANDS_DIR}/install-rule.md"
+  echo "✓ Skill installed: /install-rule"
+fi
 
 if [ -z "$RULE_ID" ]; then
   echo "Usage: install.sh <category/rule-name>"
   echo "Example: install.sh git/workflow-pr"
+  echo ""
+  echo "Tip: inside Claude Code you can also run /install-rule"
   exit 1
 fi
 
