@@ -1,6 +1,8 @@
 # 🧠 Claude Rules
 
-Marketplace of behavior rules for Claude Code. Install them on any machine with a single command.
+Behavior rules for Claude Code. Install them on any machine with a single command.
+
+Browse them at **[claude-rules-web](https://github.com/juanjimpad/claude-rules-web)**.
 
 ## Install a rule
 
@@ -58,8 +60,8 @@ Claude always works on `dev` and creates a PR with `gh pr create --base main --h
 
 ```
 rules/          ← rules in markdown
-web/            ← marketplace web UI
-install.sh      ← universal installer
+install.sh      ← universal installer (macOS/Linux)
 install.ps1     ← Windows installer
 scripts/        ← repo maintenance scripts
+plugins/        ← Claude Code plugin manifest
 ```
