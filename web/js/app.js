@@ -1,6 +1,7 @@
 const DEFAULT_SOURCE = {
   label: "juanjimpad/claude-rules",
   rawBase: "https://raw.githubusercontent.com/juanjimpad/claude-rules/main",
+  type: "rules",
 };
 
 let rules = [];
@@ -10,9 +11,9 @@ let searchQuery = "";
 // ── Sources ──────────────────────────────────────────────────────────────────
 
 function githubToRaw(url) {
-  // https://github.com/user/repo(/tree/branch)?  →  raw base
+  // Accept repo root or any deep link — extract owner/repo and optional branch
   const m = url.trim().match(
-    /^https?:\/\/github\.com\/([^/]+\/[^/]+?)(?:\/tree\/([^/]+))?(?:\/.*)?$/
+    /^https?:\/\/github\.com\/([^/]+\/[^/]+?)(?:\/(?:tree|blob)\/([^/]+))?(?:\/.*)?$/
   );
   if (!m) return null;
   const slug = m[1];
@@ -20,16 +21,45 @@ function githubToRaw(url) {
   return { label: slug, rawBase: `https://raw.githubusercontent.com/${slug}/${branch}` };
 }
 
+// Map a .claude-plugin/marketplace.json plugin entry to our card format
+function pluginToRule(plugin, marketplaceName, source) {
+  return {
+    id: plugin.name,
+    name: plugin.name,
+    title: plugin.displayName || plugin.name,
+    description: plugin.description || "",
+    category: plugin.category || "plugin",
+    tags: plugin.keywords || plugin.tags || [],
+    author: plugin.author?.name || marketplaceName,
+    version: plugin.version || "",
+    _source: source,
+    _installCmd: `/plugin install ${plugin.name}@${marketplaceName}`,
+  };
+}
+
 async function fetchSource(source) {
-  const res = await fetch(`${source.rawBase}/rules/index.json`);
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const data = await res.json();
-  return data.map(r => ({ ...r, _source: source }));
+  // Try our native format first
+  const rulesRes = await fetch(`${source.rawBase}/rules/index.json`);
+  if (rulesRes.ok) {
+    const data = await rulesRes.json();
+    return { type: "rules", items: data.map(r => ({ ...r, _source: source })) };
+  }
+
+  // Fallback: try .claude-plugin/marketplace.json
+  const pluginRes = await fetch(`${source.rawBase}/.claude-plugin/marketplace.json`);
+  if (pluginRes.ok) {
+    const data = await pluginRes.json();
+    const items = (data.plugins || []).map(p => pluginToRule(p, data.name || source.label, source));
+    return { type: "plugin", items };
+  }
+
+  throw new Error("No rules/index.json or .claude-plugin/marketplace.json found");
 }
 
 async function loadRules() {
   try {
-    rules = await fetchSource(DEFAULT_SOURCE);
+    const { items } = await fetchSource(DEFAULT_SOURCE);
+    rules = items;
   } catch {
     rules = [];
   }
@@ -46,28 +76,28 @@ async function addSource(url) {
   const btn = document.getElementById("btn-add-source");
   const input = document.getElementById("source-input");
   btn.disabled = true;
-  btn.textContent = "Cargando…";
+  btn.textContent = "Loading…";
 
   try {
-    const newRules = await fetchSource(source);
-    // Remove existing rules from this source, then add fresh ones
-    rules = rules.filter(r => r._source.rawBase !== source.rawBase).concat(newRules);
+    const { type, items } = await fetchSource(source);
+    rules = rules.filter(r => r._source.rawBase !== source.rawBase).concat(items);
     input.value = "";
-    showToast(`${newRules.length} rule(s) loaded from ${source.label}`);
+    const kind = type === "plugin" ? "plugin(s)" : "rule(s)";
+    showToast(`${items.length} ${kind} loaded from ${source.label}`);
     render();
   } catch {
-    showToast(`No rules/index.json found in ${source.label}`, true);
+    showToast(`No rules/index.json or .claude-plugin/marketplace.json found in ${source.label}`, true);
   } finally {
     btn.disabled = false;
-    btn.textContent = "Añadir";
+    btn.textContent = "Add";
   }
 }
 
 // ── Install command ───────────────────────────────────────────────────────────
 
 function installCmd(rule) {
-  const installSh = `${rule._source.rawBase}/install.sh`;
-  return `curl -sL ${installSh} | bash -s ${rule.id}`;
+  if (rule._installCmd) return rule._installCmd;
+  return `curl -sL ${rule._source.rawBase}/install.sh | bash -s ${rule.id}`;
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
@@ -85,7 +115,7 @@ function renderFilters() {
   const el = document.getElementById("filters");
   const cats = categories();
   el.innerHTML = [
-    `<button class="filter-btn${activeCategory === "all" ? " active" : ""}" data-cat="all">Todas</button>`,
+    `<button class="filter-btn${activeCategory === "all" ? " active" : ""}" data-cat="all">All</button>`,
     ...cats.map(c => `<button class="filter-btn${activeCategory === c ? " active" : ""}" data-cat="${c}">${c}</button>`)
   ].join("");
 
@@ -126,7 +156,7 @@ function renderGrid() {
         <span class="card-author">
           ${isMultiSource ? `<span class="source-badge">${r._source.label}</span>` : `by ${r.author}`}
         </span>
-        <button class="btn-install" data-cmd="${installCmd(r)}">Instalar</button>
+        <button class="btn-install" data-cmd="${installCmd(r)}">Install</button>
       </div>
     </div>
   `).join("");
@@ -138,7 +168,7 @@ function renderGrid() {
         btn.classList.add("copied");
         showToast("Command copied");
         setTimeout(() => {
-          btn.textContent = "Instalar";
+          btn.textContent = "Install";
           btn.classList.remove("copied");
         }, 2000);
       });
@@ -148,7 +178,7 @@ function renderGrid() {
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 
-function showToast(msg = "Comando copiado", isError = false) {
+function showToast(msg = "Command copied", isError = false) {
   const toast = document.getElementById("toast");
   toast.textContent = msg;
   toast.classList.toggle("toast-error", isError);
