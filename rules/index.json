@@ -1,0 +1,12 @@
+[
+  {
+    "id": "git/workflow-pr",
+    "name": "git-workflow-pr",
+    "title": "Git Workflow — PR para main",
+    "description": "Commits siempre a dev, PR para pasar a main, nunca push directo a main",
+    "category": "git",
+    "tags": ["git", "workflow", "github", "pull-request"],
+    "author": "juanjimpad",
+    "version": "1.0.0"
+  }
+]
