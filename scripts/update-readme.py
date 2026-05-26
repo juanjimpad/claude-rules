@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Replace the <!-- rules-start/end --> block in README.md with current rules."""
+"""Replace the <!-- rules-start/end --> block in README.md with the current rules."""
 
 import os
 import re

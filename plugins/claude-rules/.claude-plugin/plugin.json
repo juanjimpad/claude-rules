@@ -1,7 +1,7 @@
 {
   "name": "claude-rules",
   "displayName": "Claude Rules",
-  "description": "Install and manage Claude behavior rules from the marketplace. Adds the /install-rule command.",
+  "description": "Browse and install behavior rules for Claude Code. Adds the /install-rule command.",
   "version": "1.0.0",
   "author": {
     "name": "juanjimpad",

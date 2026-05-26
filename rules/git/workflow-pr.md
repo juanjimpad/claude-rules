@@ -1,7 +1,7 @@
 ---
 name: git-workflow-pr
-title: Git Workflow — PR para main
-description: Commits siempre a dev, PR para pasar a main, nunca push directo a main
+title: Git Workflow — PR to main
+description: Always commit to dev, open a PR to merge into main, never push directly to main
 category: git
 tags: [git, workflow, github, pull-request]
 author: juanjimpad
@@ -10,11 +10,11 @@ metadata:
   type: feedback
 ---
 
-Siempre commits y push a `dev`. Nunca hacer push directo a `main`.
+Always commit and push to `dev`. Never push directly to `main`.
 
-**Why:** El usuario gestiona main a través de PRs aprobadas por él. Un push directo a main se saltaría su revisión y rompería el flujo de trabajo.
+**Why:** The user manages main through PRs they approve. A direct push to main would skip their review and break the workflow.
 
 **How to apply:**
-1. Commit + push a `dev`
-2. Crear PR con `gh pr create --base main --head dev`
-3. El usuario aprueba y mergea en GitHub — nunca hacer el merge desde Claude
+1. Commit + push to `dev`
+2. Create PR with `gh pr create --base main --head dev`
+3. The user approves and merges on GitHub — never merge from Claude

@@ -1,65 +1,65 @@
 # 🧠 Claude Rules
 
-Marketplace de reglas de comportamiento para Claude Code. Instálalas en cualquier máquina con un solo comando.
+Marketplace of behavior rules for Claude Code. Install them on any machine with a single command.
 
-## Instalar una regla
+## Install a rule
 
 ```bash
 curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh | bash -s git/workflow-pr
 ```
 
-Las reglas se instalan en `~/.claude/memory/` y se añaden al índice `~/.claude/MEMORY.md`.
+Rules are installed in `~/.claude/memory/` and added to `~/.claude/MEMORY.md`.
 
-## Añadir una regla
+## Add a rule
 
-1. Crea un archivo en `rules/<categoria>/<nombre>.md` con el siguiente formato:
+1. Create a file at `rules/<category>/<name>.md` with the following format:
 
 ```markdown
 ---
-name: mi-regla
-title: Título de la regla
-description: Descripción corta
+name: my-rule
+title: Rule title
+description: Short description
 category: git
 tags: [tag1, tag2]
-author: tu-usuario
+author: your-username
 version: 1.0.0
 metadata:
   type: feedback
 ---
 
-Contenido de la regla...
+Rule content...
 
-**Why:** Razón por la que existe esta regla.
+**Why:** Reason this rule exists.
 
-**How to apply:** Cuándo y cómo aplicarla.
+**How to apply:** When and how to apply it.
 ```
 
-2. Abre una PR a `main`
+2. Open a PR to `main`
 
-El `rules/index.json` se regenera automáticamente al mergear.
+`rules/index.json` is regenerated automatically on merge.
 
-## Reglas disponibles
+## Available rules
 
 <!-- rules-start -->
-### `git/workflow-pr` — Git Workflow: PR para main
+### `git/workflow-pr` — Git Workflow — PR to main
 
-Commits siempre a `dev`, PR para pasar a `main`, nunca push directo a `main`.
+Always commit to `dev`, open a PR to merge into `main`, never push directly to `main`.
 
 ```bash
 curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh | bash -s git/workflow-pr
 ```
 
-Claude siempre trabajará en `dev` y creará un PR con `gh pr create --base main --head dev`. El merge lo hace el usuario desde GitHub, nunca Claude.
+Claude always works on `dev` and creates a PR with `gh pr create --base main --head dev`. The user merges from GitHub — Claude never merges.
 
 ---
 <!-- rules-end -->
 
-## Estructura
+## Structure
 
 ```
-rules/          ← reglas en markdown
-web/            ← marketplace web
-install.sh      ← instalador universal
-install.ps1     ← instalador para Windows
-scripts/        ← scripts de mantenimiento del repo
+rules/          ← rules in markdown
+web/            ← marketplace web UI
+install.sh      ← universal installer
+install.ps1     ← Windows installer
+scripts/        ← repo maintenance scripts
 ```

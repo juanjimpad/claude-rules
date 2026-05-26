@@ -4,7 +4,7 @@
     "name": "juanjimpad",
     "email": "juanjimpad@gmail.com"
   },
-  "description": "Behavioral rules and memory for Claude. Install and manage rules directly from Claude Code.",
+  "description": "Behavior rules for Claude Code. Browse and install rules directly from Claude Code.",
   "version": "1.0.0",
   "metadata": {
     "pluginRoot": "./plugins"
@@ -14,7 +14,7 @@
       "name": "claude-rules",
       "source": "./plugins/claude-rules",
       "displayName": "Claude Rules",
-      "description": "Adds the /install-rule command to browse and install Claude behavior rules from the marketplace.",
+      "description": "Adds the /install-rule command to browse and install behavior rules from the marketplace.",
       "version": "1.0.0",
       "author": {
         "name": "juanjimpad"

@@ -39,7 +39,7 @@ async function loadRules() {
 async function addSource(url) {
   const source = githubToRaw(url);
   if (!source) {
-    showToast("URL de GitHub no válida", true);
+    showToast("Invalid GitHub URL", true);
     return;
   }
 
@@ -53,10 +53,10 @@ async function addSource(url) {
     // Remove existing rules from this source, then add fresh ones
     rules = rules.filter(r => r._source.rawBase !== source.rawBase).concat(newRules);
     input.value = "";
-    showToast(`${newRules.length} regla(s) añadidas de ${source.label}`);
+    showToast(`${newRules.length} rule(s) loaded from ${source.label}`);
     render();
   } catch {
-    showToast(`No se encontró rules/index.json en ${source.label}`, true);
+    showToast(`No rules/index.json found in ${source.label}`, true);
   } finally {
     btn.disabled = false;
     btn.textContent = "Añadir";
@@ -108,7 +108,7 @@ function renderGrid() {
   });
 
   if (!filtered.length) {
-    el.innerHTML = `<div class="empty">No se encontraron reglas</div>`;
+    el.innerHTML = `<div class="empty">No rules found</div>`;
     return;
   }
 
@@ -124,7 +124,7 @@ function renderGrid() {
       <div class="card-tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
       <div class="card-footer">
         <span class="card-author">
-          ${isMultiSource ? `<span class="source-badge">${r._source.label}</span>` : `por ${r.author}`}
+          ${isMultiSource ? `<span class="source-badge">${r._source.label}</span>` : `by ${r.author}`}
         </span>
         <button class="btn-install" data-cmd="${installCmd(r)}">Instalar</button>
       </div>
@@ -134,9 +134,9 @@ function renderGrid() {
   el.querySelectorAll(".btn-install").forEach(btn => {
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(btn.dataset.cmd).then(() => {
-        btn.textContent = "¡Copiado!";
+        btn.textContent = "Copied!";
         btn.classList.add("copied");
-        showToast("Comando copiado");
+        showToast("Command copied");
         setTimeout(() => {
           btn.textContent = "Instalar";
           btn.classList.remove("copied");
