@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "dev-claude-rules",
-  "compatibility_date": "2026-05-23",
+  "name": "claude-rules",
+  "compatibility_date": "2026-05-26",
   "observability": { "enabled": true },
   "assets": { "directory": "web" },
   "compatibility_flags": ["nodejs_compat"]
