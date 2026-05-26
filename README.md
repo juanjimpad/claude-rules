@@ -1,18 +1,10 @@
 # 🧠 Claude Rules
 
-Marketplace of behavior rules for Claude Code. Install them on any machine with a single command.
-
-## Install a rule
-
-```bash
-curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh | bash -s git/workflow-pr
-```
-
-Rules are installed in `~/.claude/memory/` and added to `~/.claude/MEMORY.md`.
+Behavior rules for Claude Code. Browse and install them at **[claude-rules.com](https://claude-rules.com)**.
 
 ## Add a rule
 
-1. Create a file at `rules/<category>/<name>.md` with the following format:
+1. Create a file at `rules/<category>/<name>.md`:
 
 ```markdown
 ---
@@ -34,9 +26,7 @@ Rule content...
 **How to apply:** When and how to apply it.
 ```
 
-2. Open a PR to `main`
-
-`rules/index.json` is regenerated automatically on merge.
+1. Open a PR to `main` — `rules/index.json` and this README update automatically on merge.
 
 ## Available rules
 
@@ -44,10 +34,6 @@ Rule content...
 ### `coding/english-code` — Code and Comments in English
 
 All code, variable names, comments, and commit messages must be in English, regardless of the conversation language
-
-```bash
-curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh | bash -s coding/english-code
-```
 
 All code must be written in English, regardless of the language used in the conversation.
 
@@ -69,15 +55,12 @@ This applies even if the user writes in Spanish, French, or any other language. 
 
 Always commit to dev, open a PR to merge into main, never push directly to main
 
-```bash
-curl -sL https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh | bash -s git/workflow-pr
-```
-
 Always commit and push to `dev`. Never push directly to `main`.
 
 **Why:** The user manages main through PRs they approve. A direct push to main would skip their review and break the workflow.
 
 **How to apply:**
+
 1. Commit + push to `dev`
 2. Create PR with `gh pr create --base main --head dev`
 3. The user approves and merges on GitHub — never merge from Claude
@@ -87,10 +70,8 @@ Always commit and push to `dev`. Never push directly to `main`.
 
 ## Structure
 
-```
+```text
 rules/          ← rules in markdown
-web/            ← marketplace web UI
-install.sh      ← universal installer
-install.ps1     ← Windows installer
-scripts/        ← repo maintenance scripts
+scripts/        ← index and README auto-generation
+plugins/        ← Claude Code plugin manifest
 ```

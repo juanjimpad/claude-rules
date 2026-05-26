@@ -7,7 +7,6 @@ import re
 REPO_ROOT = os.path.join(os.path.dirname(__file__), "..")
 RULES_DIR = os.path.join(REPO_ROOT, "rules")
 README = os.path.join(REPO_ROOT, "README.md")
-INSTALL_BASE = "https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh"
 
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
@@ -48,7 +47,6 @@ def build_rules_block() -> str:
             entry = f"### `{rule_id}` — {meta['title']}\n\n"
             if meta["description"]:
                 entry += f"{meta['description']}\n\n"
-            entry += f"```bash\ncurl -sL {INSTALL_BASE} | bash -s {rule_id}\n```\n\n"
             if body:
                 entry += f"{body}\n\n"
             entry += "---"
