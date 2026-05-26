@@ -224,3 +224,17 @@ document.addEventListener("click", e => {
 });
 
 loadRules();
+
+// ── Footer commit ─────────────────────────────────────────────────────────────
+
+fetch("https://api.github.com/repos/juanjimpad/claude-rules/commits/main")
+  .then(r => r.json())
+  .then(data => {
+    const sha = data?.sha?.slice(0, 7);
+    const el = document.getElementById("footer-commit");
+    if (sha) {
+      el.textContent = sha;
+      el.href = `https://github.com/juanjimpad/claude-rules/commit/${data.sha}`;
+    }
+  })
+  .catch(() => {});
