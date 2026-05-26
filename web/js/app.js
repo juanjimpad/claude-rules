@@ -1,28 +1,84 @@
-const INDEX_URL = "https://raw.githubusercontent.com/juanjimpad/claude-rules/main/rules/index.json";
-const INSTALL_BASE = "https://raw.githubusercontent.com/juanjimpad/claude-rules/main/install.sh";
+const DEFAULT_SOURCE = {
+  label: "juanjimpad/claude-rules",
+  rawBase: "https://raw.githubusercontent.com/juanjimpad/claude-rules/main",
+};
 
 let rules = [];
 let activeCategory = "all";
 let searchQuery = "";
 
+// ── Sources ──────────────────────────────────────────────────────────────────
+
+function githubToRaw(url) {
+  // https://github.com/user/repo(/tree/branch)?  →  raw base
+  const m = url.trim().match(
+    /^https?:\/\/github\.com\/([^/]+\/[^/]+?)(?:\/tree\/([^/]+))?(?:\/.*)?$/
+  );
+  if (!m) return null;
+  const slug = m[1];
+  const branch = m[2] || "main";
+  return { label: slug, rawBase: `https://raw.githubusercontent.com/${slug}/${branch}` };
+}
+
+async function fetchSource(source) {
+  const res = await fetch(`${source.rawBase}/rules/index.json`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  return data.map(r => ({ ...r, _source: source }));
+}
+
 async function loadRules() {
   try {
-    const res = await fetch(INDEX_URL);
-    rules = await res.json();
+    rules = await fetchSource(DEFAULT_SOURCE);
   } catch {
     rules = [];
   }
-  renderFilters();
-  renderGrid();
+  render();
 }
 
-function categories() {
-  const cats = [...new Set(rules.map(r => r.category))];
-  return cats;
+async function addSource(url) {
+  const source = githubToRaw(url);
+  if (!source) {
+    showToast("URL de GitHub no válida", true);
+    return;
+  }
+
+  const btn = document.getElementById("btn-add-source");
+  const input = document.getElementById("source-input");
+  btn.disabled = true;
+  btn.textContent = "Cargando…";
+
+  try {
+    const newRules = await fetchSource(source);
+    // Remove existing rules from this source, then add fresh ones
+    rules = rules.filter(r => r._source.rawBase !== source.rawBase).concat(newRules);
+    input.value = "";
+    showToast(`${newRules.length} regla(s) añadidas de ${source.label}`);
+    render();
+  } catch {
+    showToast(`No se encontró rules/index.json en ${source.label}`, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Añadir";
+  }
 }
+
+// ── Install command ───────────────────────────────────────────────────────────
 
 function installCmd(rule) {
-  return `curl -sL ${INSTALL_BASE} | bash -s ${rule.id}`;
+  const installSh = `${rule._source.rawBase}/install.sh`;
+  return `curl -sL ${installSh} | bash -s ${rule.id}`;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+
+function categories() {
+  return [...new Set(rules.map(r => r.category))];
+}
+
+function render() {
+  renderFilters();
+  renderGrid();
 }
 
 function renderFilters() {
@@ -36,8 +92,7 @@ function renderFilters() {
   el.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       activeCategory = btn.dataset.cat;
-      renderFilters();
-      renderGrid();
+      render();
     });
   });
 }
@@ -57,6 +112,8 @@ function renderGrid() {
     return;
   }
 
+  const isMultiSource = new Set(rules.map(r => r._source.rawBase)).size > 1;
+
   el.innerHTML = filtered.map(r => `
     <div class="card">
       <div class="card-header">
@@ -66,7 +123,9 @@ function renderGrid() {
       <p class="card-desc">${r.description}</p>
       <div class="card-tags">${r.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
       <div class="card-footer">
-        <span class="card-author">por ${r.author}</span>
+        <span class="card-author">
+          ${isMultiSource ? `<span class="source-badge">${r._source.label}</span>` : `por ${r.author}`}
+        </span>
         <button class="btn-install" data-cmd="${installCmd(r)}">Instalar</button>
       </div>
     </div>
@@ -77,7 +136,7 @@ function renderGrid() {
       navigator.clipboard.writeText(btn.dataset.cmd).then(() => {
         btn.textContent = "¡Copiado!";
         btn.classList.add("copied");
-        showToast();
+        showToast("Comando copiado");
         setTimeout(() => {
           btn.textContent = "Instalar";
           btn.classList.remove("copied");
@@ -87,16 +146,34 @@ function renderGrid() {
   });
 }
 
-function showToast() {
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+function showToast(msg = "Comando copiado", isError = false) {
   const toast = document.getElementById("toast");
+  toast.textContent = msg;
+  toast.classList.toggle("toast-error", isError);
   toast.classList.remove("hidden");
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.add("hidden"), 2000);
+  showToast._t = setTimeout(() => toast.classList.add("hidden"), 2500);
 }
+
+// ── Events ────────────────────────────────────────────────────────────────────
 
 document.getElementById("search").addEventListener("input", e => {
   searchQuery = e.target.value;
   renderGrid();
+});
+
+document.getElementById("btn-add-source").addEventListener("click", () => {
+  const url = document.getElementById("source-input").value;
+  if (url.trim()) addSource(url.trim());
+});
+
+document.getElementById("source-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const url = e.target.value;
+    if (url.trim()) addSource(url.trim());
+  }
 });
 
 loadRules();
